@@ -7,26 +7,19 @@ import { AppModule } from './app.module';
 const expressApp = express();
 const adapter = new ExpressAdapter(expressApp);
 
-let initialized = false;
+let bootstrapPromise: Promise<void> | null = null;
 
-async function bootstrap() {
-  if (initialized) return;
-  initialized = true;
-
-  const app = await NestFactory.create(AppModule, adapter);
-
-  app.enableCors({
-    origin: [
-      'http://localhost:3001',
-      process.env.FRONTEND_URL,
-    ].filter(Boolean),
-    credentials: true,
-  });
-
-  app.setGlobalPrefix('api');
-  app.useGlobalPipes(new ValidationPipe({ whitelist: true }));
-
-  await app.init();
+function bootstrap(): Promise<void> {
+  if (!bootstrapPromise) {
+    bootstrapPromise = (async () => {
+      const app = await NestFactory.create(AppModule, adapter, { logger: ['error', 'warn'] });
+      app.enableCors({ origin: '*' });
+      app.setGlobalPrefix('api');
+      app.useGlobalPipes(new ValidationPipe({ whitelist: true }));
+      await app.init();
+    })();
+  }
+  return bootstrapPromise;
 }
 
 export default async function handler(req: any, res: any) {
