@@ -28,7 +28,7 @@ const products = [
     name: 'Empanadas x12',
     description: 'Docena de empanadas caseras. Rellenos a elección: carne, pollo o jamón y queso.',
     price: 4800,
-    image: 'http://localhost:3001/empanada2.png',
+    image: 'https://casa-amarilla-mf.vercel.app/empanada2.png',
     category: 'Empanadas',
     available: true,
     variant: {
@@ -40,7 +40,7 @@ const products = [
     name: 'Alfajor de ganache',
     description: 'Alfajor artesanal relleno de ganache de maní. Cobertura de chocolate semiamargo.',
     price: 1200,
-    image: 'http://localhost:3001/alfajor.png',
+    image: 'https://casa-amarilla-mf.vercel.app/alfajor.png',
     category: 'Alfajores',
     available: true,
     variant: {
