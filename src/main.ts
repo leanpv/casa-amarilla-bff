@@ -1,3 +1,4 @@
+import 'reflect-metadata';
 import { NestFactory } from '@nestjs/core';
 import { ExpressAdapter } from '@nestjs/platform-express';
 import { ValidationPipe } from '@nestjs/common';
@@ -23,8 +24,13 @@ function bootstrap(): Promise<void> {
 }
 
 export default async function handler(req: any, res: any) {
-  await bootstrap();
-  expressApp(req, res);
+  try {
+    await bootstrap();
+    expressApp(req, res);
+  } catch (err) {
+    console.error('Bootstrap error:', err);
+    res.status(500).json({ error: 'Server initialization failed', detail: String(err) });
+  }
 }
 
 if (!process.env.VERCEL) {
