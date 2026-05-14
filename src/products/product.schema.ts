@@ -22,6 +22,9 @@ export class Product {
 
   @Prop({ default: true })
   available: boolean;
+
+  @Prop({ type: { name: String, description: String }, _id: false })
+  variant: { name: string; description: string };
 }
 
 export const ProductSchema = SchemaFactory.createForClass(Product);

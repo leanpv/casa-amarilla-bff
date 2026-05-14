@@ -18,6 +18,7 @@ const ProductSchema = new mongoose.Schema({
   image: String,
   category: String,
   available: { type: Boolean, default: true },
+  variant: { name: String, description: String },
 }, { timestamps: true });
 
 const Product = mongoose.model('Product', ProductSchema);
@@ -27,26 +28,38 @@ const products = [
     name: 'Empanadas x12',
     description: 'Docena de empanadas caseras. Rellenos a elección: carne, pollo o jamón y queso.',
     price: 4800,
-    image: 'http://localhost:3001/empanada.svg',
-    category: 'comida',
+    image: 'http://localhost:3001/empanada2.png',
+    category: 'Empanadas',
     available: true,
+    variant: {
+      name: 'Carne',
+      description: 'Relleno de carne cortada a cuchillo con cebolla, morrón rojo, huevo duro y aceitunas verdes. Condimentada con comino, pimentón dulce y ají molido.',
+    },
   },
   {
-    name: 'Torta de chocolate',
-    description: 'Torta húmeda de chocolate con ganache y decoración artesanal. Para 10 porciones.',
-    price: 12500,
-    image: 'http://localhost:3001/torta.svg',
-    category: 'repostería',
+    name: 'Alfajor de ganache',
+    description: 'Alfajor artesanal relleno de ganache de maní. Cobertura de chocolate semiamargo.',
+    price: 1200,
+    image: 'http://localhost:3001/alfajor.png',
+    category: 'Alfajores',
     available: true,
+    variant: {
+      name: 'Ganache de Maní',
+      description: 'Relleno cremoso de ganache de maní tostado, entre dos tapas de masa sablée. Bañado en chocolate semiamargo artesanal.',
+    },
   },
-  {
-    name: 'Medialunas x6',
-    description: 'Medialunas de manteca recién horneadas, tiernas y crocantes. Ideal para el desayuno.',
-    price: 2200,
-    image: 'http://localhost:3001/medialuna.svg',
-    category: 'panadería',
-    available: true,
-  },
+  // {
+  //   name: 'Medialunas x6',
+  //   description: 'Medialunas de manteca recién horneadas, tiernas y crocantes. Ideal para el desayuno.',
+  //   price: 2200,
+  //   image: 'http://localhost:3001/medialuna.svg',
+  //   category: 'Medialunas',
+  //   available: true,
+  //   variant: {
+  //     name: 'Manteca',
+  //     description: 'Masa hojaldrada con manteca de primera calidad. Tiernas por dentro, crocantes por fuera. Bañadas en almíbar liviano.',
+  //   },
+  // },
 ];
 
 await mongoose.connect(uri);
