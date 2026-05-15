@@ -1,9 +1,19 @@
 import { IsString, IsNotEmpty, IsOptional, IsArray, ValidateNested, IsNumber, IsMongoId } from 'class-validator';
 import { Type } from 'class-transformer';
 
+class FlavorItemDto {
+  @IsString()
+  @IsNotEmpty()
+  name: string;
+
+  @IsNumber()
+  quantity: number;
+}
+
 class OrderItemDto {
   @IsMongoId()
-  product: string;
+  @IsOptional()
+  product?: string;
 
   @IsString()
   @IsNotEmpty()
@@ -14,6 +24,12 @@ class OrderItemDto {
 
   @IsNumber()
   price: number;
+
+  @IsArray()
+  @ValidateNested({ each: true })
+  @Type(() => FlavorItemDto)
+  @IsOptional()
+  flavors?: FlavorItemDto[];
 }
 
 export class CreateOrderDto {

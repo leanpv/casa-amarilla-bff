@@ -28,8 +28,15 @@ export class TelegramService implements OnModuleInit {
     if (!this.bot) return;
 
     const itemsList = order.items
-      .map((i) => `  • ${i.productName} x${i.quantity} — $${i.price * i.quantity}`)
-      .join('\n');
+      .map((item) => {
+        const header = `📦 *${item.productName} x${item.quantity}* — $${item.price}`;
+        const flavors =
+          item.flavors && item.flavors.length
+            ? item.flavors.map((f) => `   • ${f.name} x${f.quantity}`).join('\n')
+            : '';
+        return flavors ? `${header}\n${flavors}` : header;
+      })
+      .join('\n\n');
 
     const message = [
       `🛒 *Nuevo pedido recibido*`,
@@ -38,7 +45,6 @@ export class TelegramService implements OnModuleInit {
       `📱 *Teléfono:* ${order.customerPhone}`,
       order.customerEmail ? `📧 *Email:* ${order.customerEmail}` : null,
       ``,
-      `📦 *Productos:*`,
       itemsList,
       ``,
       `💰 *Total:* $${order.total}`,

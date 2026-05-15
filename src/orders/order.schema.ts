@@ -1,21 +1,15 @@
 import { Prop, Schema, SchemaFactory } from '@nestjs/mongoose';
 import { Document, Types } from 'mongoose';
 
-export type OrderDocument = Order & Document;
-
-class OrderItem {
-  @Prop({ type: Types.ObjectId, ref: 'Product', required: true })
-  product: Types.ObjectId;
-
-  @Prop({ required: true })
-  productName: string;
-
-  @Prop({ required: true })
-  quantity: number;
-
-  @Prop({ required: true })
-  price: number;
-}
+export type OrderDocument = Order & Document & {
+  items: {
+    product?: Types.ObjectId;
+    productName: string;
+    quantity: number;
+    price: number;
+    flavors: { name: string; quantity: number }[];
+  }[];
+};
 
 @Schema({ timestamps: true })
 export class Order {
@@ -28,8 +22,28 @@ export class Order {
   @Prop()
   customerEmail: string;
 
-  @Prop({ type: [OrderItem], required: true })
-  items: OrderItem[];
+  @Prop({
+    type: [
+      {
+        product: { type: Types.ObjectId, ref: 'Product' },
+        productName: { type: String, required: true },
+        quantity: { type: Number, required: true },
+        price: { type: Number, required: true },
+        flavors: {
+          type: [{ name: { type: String }, quantity: { type: Number } }],
+          default: [],
+        },
+      },
+    ],
+    required: true,
+  })
+  items: {
+    product?: Types.ObjectId;
+    productName: string;
+    quantity: number;
+    price: number;
+    flavors: { name: string; quantity: number }[];
+  }[];
 
   @Prop({ required: true })
   total: number;
