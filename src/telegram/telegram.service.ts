@@ -7,21 +7,22 @@ import { OrderDocument } from '../orders/order.schema';
 export class TelegramService implements OnModuleInit {
   private readonly logger = new Logger(TelegramService.name);
   private bot: TelegramBot;
-  private adminChatId: string = '';
+  private chatIds: string[] = [];
 
   constructor(private readonly config: ConfigService) {}
 
   onModuleInit() {
     const token = this.config.get<string>('TELEGRAM_BOT_TOKEN');
-    this.adminChatId = this.config.get<string>('TELEGRAM_ADMIN_CHAT_ID') ?? '';
+    const ids = this.config.get<string>('TELEGRAM_ADMIN_CHAT_ID') ?? '';
+    this.chatIds = ids.split(',').map(id => id.trim()).filter(Boolean);
 
-    if (!token || !this.adminChatId) {
+    if (!token || this.chatIds.length === 0) {
       this.logger.warn('Telegram not configured — notifications disabled');
       return;
     }
 
     this.bot = new TelegramBot(token);
-    this.logger.log('Telegram bot initialized');
+    this.logger.log(`Telegram bot initialized — ${this.chatIds.length} recipient(s)`);
   }
 
   async notifyNewOrder(order: OrderDocument): Promise<void> {
@@ -54,7 +55,9 @@ export class TelegramService implements OnModuleInit {
       .join('\n');
 
     try {
-      await this.bot.sendMessage(this.adminChatId, message, { parse_mode: 'Markdown' });
+      await Promise.all(
+        this.chatIds.map(id => this.bot.sendMessage(id, message, { parse_mode: 'Markdown' }))
+      );
     } catch (err) {
       this.logger.error('Failed to send Telegram notification', err);
     }
